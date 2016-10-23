@@ -13,34 +13,30 @@
         
         <title>Instagrim</title>
        <style type="text/css">
-          
-       ul#nav{ 
-           position:absolute;
-           left:30px;
-           height:60px;
-         
-           margin:0 auto} 
-      ul#nav li{
-          display:inline;
-            background:#00A2CA;
-         
-          height:40px} 
-      ul#nav li a{
-          width:70px;  
-          text-align: center;
-          display:inline-block;
-          padding:0 30px;
-          height:60px;
-          line-height:60px;
-          color:#FFF;
-          font-family:"\5FAE\8F6F\96C5\9ED1";
-          font-size:20px;} 
-      ul#nav li a:hover{
-          background:#0095BB}/*设置鼠标滑过或悬停时变化的背景颜色*/ 
-        #zjda01{
-            margin-left:150px;
-            float:left
+        ul{
+            float:left;
         }
+        a{
+            padding-right:50px;
+            float:left;
+        }
+        li{
+            margin-left:20px;
+            font-size:20px;
+            font-weight:bold;
+            color:white;
+            display:block;
+            border:1px solid black;
+            width:100px;
+            
+            text-decoration:none;
+            text-align:center;
+            background-color:darkseagreen;
+        }
+        li:hover{
+            color:red;
+            }
+        #zjda01{margin-left:50px;float:left}
         </style>       
     </head>
     <body background="/Instagrim/1.jpg">
@@ -50,48 +46,47 @@
         </header>
         
         <nav>
-            <ul id="nav">
-                <li> <a style="text-decoration:none" href="/Instagrim">Home</a></li><br><br>
-                <li><a style="text-decoration:none" href="/Instagrim/upload.jsp">Upload</a></li><br><br>
+            <ul>
+                <a style="text-decoration:none" href="/Instagrim"><li>Home</li></a>
+                <a style="text-decoration:none" href="/Instagrim/upload.jsp"><li>Upload</li></a>
                  <%        
                         LoggedIn lg = (LoggedIn) session.getAttribute("LoggedIn");
                         if (lg != null) {
                             String UserName = lg.getUsername();
                             if (lg.getlogedin()) {
                     %>
-                <li style="background-color:darkseagreen;"><a style="text-decoration:none" href="/Instagrim/Images/<%=lg.getUsername()%>">Images</a></li><br><br>
+                <a style="text-decoration:none" href="/Instagrim/Images/<%=lg.getUsername()%>"><li style="background-color:white;color:darkseagreen;">Images</li></a>
                 
                 <%}
                             }else{
                                 %><%          
                     }%>
-              <li> <a style="text-decoration:none" href="/Instagrim/Logout"> Logout</a></li><br><br>
+               <a style="text-decoration:none" href="/Instagrim/Logout"> <li>Logout</li></a>
             </ul>
         </nav>
  
         <article>
             <br><br><br>
-            <h1  style="color: white;text-align: left;padding-left: 200px">Your Pics </h1>
-           <p style="color: white;text-align: left;padding-left: 200px">click the pics to add comment</p>
+            <h1 style="color: white;text-align: left;padding-left: 50px">Your Pics</h1>
         <%
             java.util.LinkedList<Pic> lsPics = (java.util.LinkedList<Pic>) request.getAttribute("Pics");
             if (lsPics == null) {
         %> 
-        <p style="color:white;padding-left: 200px">No Pictures found</p>
+        <p style="color:white">No Pictures found</p>
         <%
         } else {
             Iterator<Pic> iterator;
             iterator = lsPics.iterator();
             while (iterator.hasNext()) {
                 Pic p = (Pic) iterator.next();
-                    String picname=p.getSUUID();
+
         %>
-        <ul class="hello">
+        
             <div id="zjda01">
-            <a href="/Instagrim/comment/<%=p.getSUUID()%>" ><img src="/Instagrim/Thumb/<%=p.getSUUID()%>"></a>
+            <a href="/Instagrim/Image/<%=p.getSUUID()%>" ><img src="/Instagrim/Thumb/<%=p.getSUUID()%>"></a>
             </div>
-            
-        </ul>
+        
+        
         <%
 
             }

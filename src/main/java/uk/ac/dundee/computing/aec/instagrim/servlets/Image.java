@@ -1,6 +1,11 @@
 package uk.ac.dundee.computing.aec.instagrim.servlets;
 
+import com.datastax.driver.core.BoundStatement;
 import com.datastax.driver.core.Cluster;
+import com.datastax.driver.core.PreparedStatement;
+import com.datastax.driver.core.ResultSet;
+import com.datastax.driver.core.Row;
+import com.datastax.driver.core.Session;
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -81,13 +86,13 @@ public class Image extends HttpServlet {
         }
         switch (command) {
             case 1:
-                DisplayImage(Convertors.DISPLAY_PROCESSED,args[2], response);
+                DisplayImage(Convertors.DISPLAY_PROCESSED,args[2], response,request);
                 break;
             case 2:
                 DisplayImageList(args[2], request, response);
                 break;
             case 3:
-                DisplayImage(Convertors.DISPLAY_THUMB,args[2],  response);
+                DisplayImage(Convertors.DISPLAY_THUMB,args[2],  response,request);
                 break;
             default:
                 error("Bad Operator", response);
@@ -104,12 +109,14 @@ public class Image extends HttpServlet {
 
     }
 
-    private void DisplayImage(int type,String Image, HttpServletResponse response) throws ServletException, IOException {
+    private void DisplayImage(int type,String Image, HttpServletResponse response, HttpServletRequest request) throws ServletException, IOException {
         PicModel tm = new PicModel();
         tm.setCluster(cluster);
-  
+ 
         
         Pic p = tm.getPic(type,java.util.UUID.fromString(Image));
+        
+        
         
         OutputStream out = response.getOutputStream();
 
@@ -123,9 +130,26 @@ public class Image extends HttpServlet {
             out.write(buffer, 0, length);
         }
         out.close();
+        
+        Session session1 = cluster.connect("instagrim");
+        String code="select comment from pics where picid="+Image;
+        PreparedStatement ps = session1.prepare(code);
+      
+        BoundStatement boundStatement = new BoundStatement(ps);
+        ResultSet rs =session1.execute( // this is where the query is executed
+                boundStatement.bind());
+            String word="\n";
+        for (Row row:rs)
+        {
+            word=row.toString();
+        }
+        HttpSession session=request.getSession();
+        session.setAttribute("commentword", word);
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        System.out.println("in post");
+        
         for (Part part : request.getParts()) {
             System.out.println("Part Name " + part.getName());
 

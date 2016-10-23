@@ -16,23 +16,25 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import uk.ac.dundee.computing.aec.instagrim.lib.CassandraHosts;
 import uk.ac.dundee.computing.aec.instagrim.models.User;
+import uk.ac.dundee.computing.aec.instagrim.stores.LoggedIn;
 
 /**
  *
  * @author Administrator
  */
-@WebServlet(name = "Register", urlPatterns = {"/Register"})
-public class Register extends HttpServlet {
+@WebServlet(name = "Logout", urlPatterns = {"/Logout","/Logout/*"})
+public class Logout extends HttpServlet {
+
     Cluster cluster=null;
+
+
     public void init(ServletConfig config) throws ServletException {
         // TODO Auto-generated method stub
         cluster = CassandraHosts.getCluster();
     }
-
-
-
 
     /**
      * Handles the HTTP <code>POST</code> method.
@@ -43,15 +45,15 @@ public class Register extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        String username=request.getParameter("username");
-        String password=request.getParameter("password");
-        String email=request.getParameter("e-mail");
-        User us=new User();
-        us.setCluster(cluster);
-        us.RegisterUser(username, password,email);
-	response.sendRedirect("/Instagrim/index.jsp ");
+        //System.out.println("inside logout");
+            HttpSession session=request.getSession();
+            LoggedIn lg= (LoggedIn)session.getAttribute("LoggedIn");
+            lg.setLogedout();     
+            session.invalidate();
+            RequestDispatcher rd=request.getRequestDispatcher("/index.jsp");
+	    rd.forward(request,response);
     }
 
     /**

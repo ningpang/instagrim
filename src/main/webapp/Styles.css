@@ -8,9 +8,32 @@ and open the template in the editor.
     Author     : Administrator
 */
 
+div.abs{
+    position: relative;
+    width:100%;
+}
+div.rel{
+    position: absolute;
+    top:0;
+    left:400px;
+}
+
+ul.hello
+{
+    border:10px solid ;
+    position: relative;
+}
+.pang{
+    position:relative;
+    height:200px;
+    border:10px solid red;
+}
 
 nav {
     text-align: left;
     border: 2px;
-    float: right;
+    float: left;
 }
+
+
+
